@@ -13,6 +13,7 @@ export default defineNuxtConfig({
   },
   publicRuntimeConfig: {
     API_BASE_URL: process.env.API_BASE_URL,
-    IMAGE_BASE_URL: process.env.IMAGE_BASE_URL
+    IMAGE_BASE_URL: process.env.IMAGE_BASE_URL,
+    VIDEO_BASE_URL: process.env.VIDEO_BASE_URL,
   },
 });

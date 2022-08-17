@@ -1,77 +1,96 @@
 <template>
+<v-btn @click="refresh()">Refresh</v-btn>
     <v-form>
-        <v-container class="pa-4 text-center">
-            <v-row align="center" justify="center">
-                <v-col cols="11">
+        <v-container class="text-center">
+
+            <!-- <v-row align="center" justify="center">
+                <v-col cols="12" class="d-flex">
                     <v-text-field v-model="search" clear-icon="mdi-close-circle" variant="solo" clearable
-                        label="Message" hide-details="auto" type="text" @click:append="valid = !valid"></v-text-field>
-                </v-col>
-                <v-col cols="1">
-                    <v-btn icon="mdi-magnify" size="large" @click="refresh()">
+                        label="Message" hide-details="auto" type="text" @click:append="valid = !valid"
+                        @keydown.enter.prevent="refresh()"></v-text-field>
+                    <v-btn size="x-large" class="ml-2 align-self-auto" @click="refresh()">
+                        <v-icon>mdi-magnify</v-icon>
                     </v-btn>
                 </v-col>
-            </v-row>
+            </v-row> -->
 
-            <v-container class="pa-4 text-center">
-                <v-row class="fill-height" align="center" justify="center">
-                    <template v-for="(card, i) in data.results" :key="i">
-                        <v-col :cols="flex" md="3">
+
+            <!-- <v-container class=" px-0"> -->
+                <v-row class="fill-height text-center" align="center" justify="center">
+                    <template v-for="(card, i) in data?.results" :key="i">
+                        <v-col :cols="flex" md="2">
 
                             <v-hover v-slot="{ isHovering, props }">
-                                <v-card :elevation="isHovering ? 12 : 2" :class="{ 'on-hover': isHovering }"
-                                    v-bind="props">
-                                    <v-img :src="`${IMAGE_BASE_URL}${card.poster_path}`" height="235px" cover>
+                                <v-card :elevation="isHovering ? 12 : 2" class="d-flex"
+                                    :class="{ 'on-hover': !isHovering }" v-bind="props">
+                                    <v-img lazy-src="https://picsum.photos/id/11/100/60"
+                                        :src="`${IMAGE_BASE_URL}${card.poster_path}`" height="265px" cover>
+
+                                        <template v-slot:placeholder v-if="card.poster_path">
+                                            <v-row class="fill-height ma-0" align="center" justify="center">
+                                                <v-progress-circular indeterminate color="grey lighten-5">
+                                                </v-progress-circular>
+                                            </v-row>
+                                        </template>
+
+                                        <div class="d-flex align-center justify-center fill-height">
+                                            <v-btn rounded="pill" :flat="!isHovering"
+                                                :color="isHovering ? 'primary' : 'rgba(255, 255, 255, 0)'"
+                                                :class="{ 'show-btns': isHovering }"
+                                                :href="`/${card.id}`"
+                                                target="_blank">
+                                                {{ isHovering ? 'Assistir' : '' }}
+                                                <v-icon end :color="isHovering ? 'white' : 'rgba(255, 255, 255, 0)'">mdi-play</v-icon>
+                                            </v-btn>
+                                        </div>
+
                                         <v-card-title class="text-h6 text-white d-flex flex-column">
-                                            <p class="mt-4">
+                                            <!-- <p class="mt-4 font-weight-black">
                                                 {{ card.name }}
                                             </p>
 
                                             <div>
                                                 <p class="ma-0 text-body-1 font-weight-bold">
-                                                    {{ card.vote_average }}
+                                                   <v-icon>mdi-star-outline</v-icon> {{ card.vote_average }}
                                                 </p>
-                                                <!-- <p class="text-caption font-weight-medium">
-                                            {{ card.subtext }}
-                                        </p> -->
-                                            </div>
+                                            </div> -->
                                         </v-card-title>
-                                        <div class="align-self-center">
-                                            <v-btn v-for="(icon, index) in icons" :key="index" variant="text"
-                                                :class="{ 'show-btns': isHovering }" :color="'rgba(255, 255, 255, 0)'"
-                                                :icon="icon"></v-btn>
-                                        </div>
+                                        <!-- <div class="align-self-center">
+                                            <v-btn rounded="pill"
+                                                :color="isHovering ? 'primary' : 'rgba(255, 255, 255, 0)'"
+                                                :class="{ 'show-btns': isHovering }">
+                                                {{ isHovering ? 'Assistir' : '' }}
+                                            </v-btn>
+                                        </div> -->
                                     </v-img>
                                 </v-card>
                             </v-hover>
                         </v-col>
                     </template>
                 </v-row>
-            </v-container>
+            <!-- </v-container> -->
         </v-container>
     </v-form>
 
 </template>
 
 <script setup lang="ts">
-import debounce from 'lodash.debounce'
-const flex = 3;
+const flex = 1;
 const icons = ['mdi-rewind', 'mdi-play', 'mdi-fast-forward'];
 const valid = ref(true);
 const search = ref('dexter');
 
 const { API_BASE_URL, IMAGE_BASE_URL } = useRuntimeConfig()
-// const { data, pending, refresh } = await useAsyncData(() => $fetch(`${API_BASE_URL}&query=${search.value}`) as Promise<Data>, { watch: [search] })
-const { data, pending, refresh } = await useAsyncData(() => getFilteredResults as Promise<Data>, { watch: [search] })
+const { data, pending, refresh } = await useAsyncData('results', () => $fetch(`${API_BASE_URL}&query=${search.value}`) as Promise<Data>)
 
-
-const getFilteredResults = () => $fetch(`${API_BASE_URL}&query=${search.value}`)
-
-const debouncedFilter = debounce(getFilteredResults, 250) // 250ms delay
-
-watch(() => search.value, debouncedFilter) 
 </script>
 
 <style scoped>
+/* .v-btn {
+    height: 56px;
+    min-height: 56px;
+}
+
 .v-card {
     transition: opacity .4s ease-in-out;
 }
@@ -82,5 +101,5 @@ watch(() => search.value, debouncedFilter)
 
 .show-btns {
     color: rgba(255, 255, 255, 1) !important;
-}
+} */
 </style>

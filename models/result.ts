@@ -1,15 +1,12 @@
-interface Result {
-    backdrop_path: string
-    poster_path: string
-    first_air_date: string
-    genre_ids: number[]
-    id: number
-    name: string
-    origin_country: string[]
-    original_language: string
-    original_name: string
-    overview: string
-    popularity: string
-    vote_average: number
-    vote_count: number
+export interface Result {
+  iso_639_1: string;
+  iso_3166_1: string;
+  name: string;
+  key: string;
+  published_at: Date;
+  site: string;
+  size: number;
+  type: string;
+  official: boolean;
+  id: string;
 }
