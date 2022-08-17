@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview"
+  },
+  "devDependencies": {
+    "@types/lodash.debounce": "^4.0.7",
+    "nuxt": "3.0.0-rc.8"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "mdi": "^2.2.43",
+    "sass": "^1.54.4",
+    "vuetify": "^3.0.0-beta.7"
+  }
+}
